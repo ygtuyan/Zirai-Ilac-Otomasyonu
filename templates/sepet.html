@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ kisi['Ad Soyad'] }} - Müşteri Sepeti</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">{{ kisi['Ad Soyad'] }} - Sepet ve Satış</h2>
+            <a href="/" class="btn btn-secondary">Ana Sayfaya Dön</a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info fw-bold">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white"><h5>Sepete İlaç Ekle</h5></div>
+                    <div class="card-body">
+                        <form action="/sepet/{{ kisi.ID }}" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Ürün Seçin</label>
+                                <select name="urun_id" class="form-select" required>
+                                    <option value="">-- İlaç Seçin --</option>
+                                    {% for u in urunler %}
+                                    <option value="{{ u.Urun_ID }}">{{ u.Urun_Adi }} (Stok: {{ u.Stok }} | {{ u.Fiyat }} TL)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Miktar</label>
+                                <input type="number" name="miktar" class="form-control" min="1" value="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Sepete Ekle</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white"><h5>Sepet İçeriği</h5></div>
+                    <div class="card-body">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>İlaç Adı</th>
+                                    <th>Miktar</th>
+                                    <th>Birim Fiyat</th>
+                                    <th>Toplam Tutar</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set genel_toplam = namespace(value=0) %}
+                                {% for s in sepet %}
+                                <tr>
+                                    <td>{{ s.Urun_Adi }}</td>
+                                    <td>{{ s.Miktar }}</td>
+                                    <td>{{ s.Fiyat }} TL</td>
+                                    <td>{{ s.Toplam_Tutar }} TL</td>
+                                    <td>
+                                        <a href="/sepetten-sil/{{ kisi.ID }}/{{ s.Sepet_ID }}" class="btn btn-danger btn-sm">Çıkar</a>
+                                    </td>
+                                </tr>
+                                {% set genel_toplam.value = genel_toplam.value + s.Toplam_Tutar %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Sepet şu an boş. Hemen yandaki formdan ilaç ekleyebilirsiniz.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            {% if sepet %}
+                            <tfoot>
+                                <tr class="table-info fw-bold">
+                                    <td colspan="3" class="text-end">Genel Toplam:</td>
+                                    <td colspan="2">{{ genel_toplam.value }} TL</td>
+                                </tr>
+                            </tfoot>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

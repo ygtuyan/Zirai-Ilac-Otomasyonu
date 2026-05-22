@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Zirai İlaç Otomasyonu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center text-success">Bereket Zirai İlaç - Çiftçi Yönetimi</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white"><h5>Yeni Çiftçi Ekle</h5></div>
+                    <div class="card-body">
+                        <form action="/musteri-ekle" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Adı Soyadı</label>
+                                <input type="text" name="ad_soyad" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">TC Kimlik No</label>
+                                <input type="text" name="tc_no" class="form-control" maxlength="11" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Telefon</label>
+                                <input type="text" name="telefon" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white"><h5>Kayıtlı Çiftçiler</h5></div>
+                    <div class="card-body">
+                       <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ad Soyad</th>
+                                    <th>TCKN</th>
+                                    <th>Telefon</th>
+                                    <th>İşlem</th> </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in musteriler %}
+                                <tr>
+                                    <td>{{ m.ID }}</td>
+                                    <td>{{ m['Ad Soyad'] }}</td>
+                                    <td>{{ m.TCKN }}</td>
+                                    <td>{{ m.Telefon }}</td>
+                                    <td>
+                                        <a href="/sepet/{{ m.ID }}" class="btn btn-primary btn-sm">Sepet</a>
+                                        <a href="/musteri-guncelle/{{ m.ID }}" class="btn btn-warning btn-sm">Güncelle</a>
+                                        <a href="/musteri-sil/{{ m.ID }}" class="btn btn-danger btn-sm" onclick="return confirm('Bu çiftçiyi silmek istediğinize emin misiniz?');">Sil</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
