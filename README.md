@@ -54,6 +54,7 @@ Terminali (Command Prompt) açın ve Flask ile MySQL sürücüsünü yükleyin:
 
 Bash
 pip install Flask mysql-connector-python
+
 4. Projeyi Başlatın:
 Terminal üzerinden proje klasörüne gidin ve uygulamayı ayağa kaldırın:
 
